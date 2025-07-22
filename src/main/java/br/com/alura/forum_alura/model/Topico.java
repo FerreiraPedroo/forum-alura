@@ -1,11 +1,11 @@
 package br.com.alura.forum_alura.model;
 
-import br.com.alura.forum_alura.DTO.DadosNovoTopico;
+import br.com.alura.forum_alura.DTO.DadosTopicoCadastrar;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "topicos")
 @Entity(name = "Topico")
@@ -19,17 +19,31 @@ public class Topico {
     private Long id;
     private String titulo;
     private String mensagem;
-    private String dataCriacao;
+    private String data_criacao;
     private String status;
-    private Long autor;
-    private Long curso;
-    private Long respostas;
+    @ManyToOne
+    private Usuario autor;
+    @ManyToOne
+    private Curso curso;
+    @OneToMany(mappedBy = "topico")
+    private List<Resposta> respostas;
 
-    public Topico(DadosNovoTopico cadastro) {
+    public Topico(DadosTopicoCadastrar cadastro) {
         this.titulo = cadastro.titulo();
         this.mensagem = cadastro.mensagem();
-        this.autor = cadastro.autor();
-        this.curso = cadastro.curso();
+        this.data_criacao = LocalDateTime.now().toString();
+    }
+
+    public void setAutor(Usuario autor) {
+        this.autor = autor;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+
+    public void setResposta(List<Resposta> resposta) {
+        this.respostas = resposta;
     }
 
 }

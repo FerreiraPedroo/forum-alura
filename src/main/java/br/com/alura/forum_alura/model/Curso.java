@@ -1,5 +1,6 @@
 package br.com.alura.forum_alura.model;
 
+import br.com.alura.forum_alura.DTO.DadosCursoCadastrar;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -18,9 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Curso {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-        private String nome;
-        private String categoria;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nome;
+    private String categoria;
+
+    public Curso(DadosCursoCadastrar dados) {
+        this.nome = dados.nome();
+        this.categoria = dados.categoria();
+    }
 }

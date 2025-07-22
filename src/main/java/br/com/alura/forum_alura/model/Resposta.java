@@ -17,9 +17,14 @@ public class Resposta {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         private String mensagem;
-        private Long topico;
         private String dataCriacao;
-        private Long autor;
         private boolean solucao;
+
+        @ManyToOne
+        private Usuario autor;
+
+        @ManyToOne
+        private Topico topico;
+
 
 }
