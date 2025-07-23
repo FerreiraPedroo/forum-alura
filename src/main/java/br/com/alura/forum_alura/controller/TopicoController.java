@@ -1,8 +1,7 @@
 package br.com.alura.forum_alura.controller;
 
 
-import br.com.alura.forum_alura.DTO.DadosTopicoCadastrar;
-import br.com.alura.forum_alura.DTO.DadosTopicoLista;
+import br.com.alura.forum_alura.DTO.*;
 import br.com.alura.forum_alura.model.Curso;
 import br.com.alura.forum_alura.model.Topico;
 import br.com.alura.forum_alura.model.Usuario;
@@ -69,6 +68,38 @@ public class TopicoController {
             System.out.println(listaTopicos);
 
             return ResponseEntity.ok(listaTopicos);
+
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
+        }
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity atualizarTopicos(@RequestBody @Valid DadosTopicoAtualizar dados) {
+        try {
+
+            Optional<Topico> topicoEncontrado = repositorio.findById(dados.id());
+            Optional<Curso> cursoEncontrado = cursoRepositorio.findById(dados.curso());
+
+            if(!topicoEncontrado.isPresent()){
+                return ResponseEntity.badRequest().body("Topico que deseja atualizar não encontrado.");
+            } else if (!cursoEncontrado.isPresent()) {
+                return ResponseEntity.badRequest().body("Curso que deseja associar ao topico não encontrado");
+            }
+
+            Topico topico = topicoEncontrado.get();
+            Curso curso = cursoEncontrado.get();
+
+            topico.setCurso(curso);
+            topico.atualizarInformacoes(dados);
+
+            repositorio.save(topico);
+
+            DadosTopicoAtualizado topicoAtualizado = new DadosTopicoAtualizado(topico);
+
+            return ResponseEntity.ok(topicoAtualizado);
 
 
         } catch (Exception e) {

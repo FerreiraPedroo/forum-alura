@@ -11,7 +11,5 @@ public record DadosTopico(
         DadosTopicoAutor autor,
         DadosTopicoCurso curso,
         List<DadosTopicoRespostas> respostas
-
-
 ) {
 }

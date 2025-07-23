@@ -1,6 +1,10 @@
 package br.com.alura.forum_alura.model;
 
+import br.com.alura.forum_alura.DTO.DadosTopicoAtualizar;
 import br.com.alura.forum_alura.DTO.DadosTopicoCadastrar;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,6 +48,12 @@ public class Topico {
 
     public void setResposta(List<Resposta> resposta) {
         this.respostas = resposta;
+    }
+
+    public void atualizarInformacoes(DadosTopicoAtualizar dados) {
+        if (dados.titulo() != null) this.titulo = dados.titulo();
+        if (dados.mensagem() != null) this.mensagem = dados.mensagem();
+        if (dados.status() != null) this.status = dados.status();
     }
 
 }
