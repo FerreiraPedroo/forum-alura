@@ -1,6 +1,5 @@
 package br.com.alura.forum_alura.controller;
 
-
 import br.com.alura.forum_alura.DTO.*;
 import br.com.alura.forum_alura.model.Curso;
 import br.com.alura.forum_alura.model.Topico;
@@ -51,48 +50,33 @@ public class TopicoController {
 
             repositorio.save(topico);
 
-            return ResponseEntity.ok("Tópico criado com sucesso.");
+            return ResponseEntity.ok("Topico criado com sucesso.");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi possivel criar o tópico.");
+            return ResponseEntity.badRequest().body("Não foi possivel criar o tpico.");
         }
     }
 
-    @GetMapping
-    public ResponseEntity listarTopicos() {
-        try {
-
-            List<DadosTopicoLista> listaTopicos = repositorio.findAll()
-                    .stream()
-                    .map(DadosTopicoLista::new).toList();
-
-            System.out.println(listaTopicos);
-
-            return ResponseEntity.ok(listaTopicos);
-
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
-        }
-    }
-
-    @PutMapping
+    @PutMapping("{id}")
     @Transactional
-    public ResponseEntity atualizarTopicos(@RequestBody @Valid DadosTopicoAtualizar dados) {
+    public ResponseEntity atualizarTopicos(@PathVariable Long id, @RequestBody @Valid DadosTopicoAtualizar dados) {
+
         try {
+            Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
-            Optional<Topico> topicoEncontrado = repositorio.findById(dados.id());
-            Optional<Curso> cursoEncontrado = cursoRepositorio.findById(dados.curso());
-
-            if(!topicoEncontrado.isPresent()){
+            if (!topicoEncontrado.isPresent()) {
                 return ResponseEntity.badRequest().body("Topico que deseja atualizar não encontrado.");
-            } else if (!cursoEncontrado.isPresent()) {
-                return ResponseEntity.badRequest().body("Curso que deseja associar ao topico não encontrado");
+            }
+            Topico topico = topicoEncontrado.get();
+
+            if (dados.curso() != null) {
+                Optional<Curso> cursoEncontrado = cursoRepositorio.findById(dados.curso());
+                if (!cursoEncontrado.isPresent()) {
+                    return ResponseEntity.badRequest().body("Curso que deseja associar ao topico não encontrado");
+                }
+                Curso curso = cursoEncontrado.get();
+                topico.setCurso(curso);
             }
 
-            Topico topico = topicoEncontrado.get();
-            Curso curso = cursoEncontrado.get();
-
-            topico.setCurso(curso);
             topico.atualizarInformacoes(dados);
 
             repositorio.save(topico);
@@ -103,7 +87,64 @@ public class TopicoController {
 
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
+            return ResponseEntity.badRequest().body("Não foi possivel atualizar o topico.");
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity listarTopicos() {
+        try {
+
+            List<DadosTopico> listaTopicos = repositorio.findAll()
+                    .stream()
+                    .map(DadosTopico::new).toList();
+
+            System.out.println(listaTopicos);
+
+            return ResponseEntity.ok(listaTopicos);
+
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi obter a lista de topicos.");
+        }
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity detalhesDoTopico(@PathVariable Long id) {
+        try {
+
+            Optional<Topico> topicoEncontrado = repositorio.findById(id);
+
+            if (!topicoEncontrado.isPresent()) {
+                return ResponseEntity.badRequest().body("Topico não encontrado.");
+            }
+
+            Topico topico = topicoEncontrado.get();
+            DadosTopico topicoDados = new DadosTopico(topico);
+
+            return ResponseEntity.ok(topicoDados);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi obter o tópico.");
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity excluirTopico(@PathVariable Long id) {
+        try {
+
+            Optional<Topico> topicoEncontrado = repositorio.findById(id);
+
+            if (!topicoEncontrado.isPresent()) {
+                return ResponseEntity.badRequest().body("Topico não encontrado.");
+            }
+
+            repositorio.deleteById(id);
+
+            return ResponseEntity.ok("Topico exluido com sucesso.");
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi excluir o tópico.");
         }
     }
 }

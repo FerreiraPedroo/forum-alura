@@ -4,7 +4,7 @@ public record DadosTopicoRespostas(
         Long id,
         String mensagem,
         String data_criacao,
-        DadosTopicoAutor autor,
+        DadosTopicoUsuario autor,
         Boolean solucao
 ) {
 }
