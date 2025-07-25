@@ -12,5 +12,5 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
     @Query("SELECT u FROM Usuario u WHERE UPPER(u.nome) = UPPER(:usuarioNome) ")
     public Optional<Usuario> procurarUsuarioPeloNome(String usuarioNome);
 
-    UserDetails findByNome(String username);
+    UserDetails findByEmail(String email);
 }
