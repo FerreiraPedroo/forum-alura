@@ -1,8 +1,11 @@
 package br.com.alura.forum_alura.controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import br.com.alura.forum_alura.DTO.DadosUsuarioAutenticacao;
+import br.com.alura.forum_alura.DTO.DadosAutenticacao;
+import br.com.alura.forum_alura.infra.security.DadosTokenJWT;
+import br.com.alura.forum_alura.infra.security.TokenService;
+import br.com.alura.forum_alura.model.Usuario;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +21,18 @@ public class AutenticacaoController {
     @Autowired
     private AuthenticationManager manager;
 
+    @Autowired
+    private TokenService tokenService;
+
 
     @PostMapping
-    public ResponseEntity efetuarLogin(@RequestBody @Valid DadosUsuarioAutenticacao dados) {
-        var token = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
-        var authentication = manager.authenticate(token);
+    public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
+        var tokenAutenticacao = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
+        var authentication = manager.authenticate(tokenAutenticacao);
 
-        return ResponseEntity.ok().build();
+        var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+
+        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
     }
 
 }
