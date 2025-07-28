@@ -1,17 +1,16 @@
 package br.com.alura.forum_alura.controller;
 
 
-import br.com.alura.forum_alura.DTO.DadosCurso;
-import br.com.alura.forum_alura.DTO.DadosCursoCadastrar;
-import br.com.alura.forum_alura.model.Curso;
-import br.com.alura.forum_alura.repository.CursoRepositorio;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.alura.forum_alura.model.Curso;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
+import br.com.alura.forum_alura.DTO.DadosCurso;
 import org.springframework.web.bind.annotation.*;
+import br.com.alura.forum_alura.DTO.DadosCursoCadastrar;
 import org.springframework.web.util.UriComponentsBuilder;
+import br.com.alura.forum_alura.repository.CursoRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +55,25 @@ public class CursoController {
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluirCurso(@PathVariable Long id) {
+        try {
+            Optional<Curso> cursoEncontrado = repositorio.findById(id);
+
+            if (!cursoEncontrado.isPresent()) {
+                return ResponseEntity.badRequest().body("Curso não encontrado.");
+            }
+
+            repositorio.deleteById(id);
+
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi excluir o curso.");
         }
     }
 }

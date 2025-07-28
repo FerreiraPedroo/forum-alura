@@ -8,7 +8,7 @@ public record DadosTopico(
         Long id,
         String titulo,
         String mensagem,
-        String data_criacao,
+        String dataCriacao,
         String status,
         DadosTopicoUsuario autor,
         DadosTopicoCurso curso
@@ -18,7 +18,7 @@ public record DadosTopico(
                 topico.getId(),
                 topico.getTitulo(),
                 topico.getMensagem(),
-                topico.getData_criacao(),
+                topico.getDataCriacao(),
                 topico.getStatus(),
                 new DadosTopicoUsuario(topico.getAutor()),
                 new DadosTopicoCurso(topico.getCurso())

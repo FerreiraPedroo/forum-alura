@@ -5,7 +5,7 @@ import br.com.alura.forum_alura.model.Topico;
 public record DadosTopicoAtualizado(
         String titulo,
         String mensagem,
-        String data_criacao,
+        String dataCriacao,
         String status,
         DadosUsuario autor,
         DadosCurso curso
@@ -14,7 +14,7 @@ public record DadosTopicoAtualizado(
         this(
                 topico.getTitulo(),
                 topico.getMensagem(),
-                topico.getData_criacao(),
+                topico.getDataCriacao(),
                 topico.getStatus(),
                 new DadosUsuario(topico.getAutor()),
                 new DadosCurso(topico.getCurso())

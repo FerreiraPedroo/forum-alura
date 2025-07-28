@@ -23,7 +23,8 @@ public class Topico {
     private Long id;
     private String titulo;
     private String mensagem;
-    private String data_criacao;
+    @Column(name = "data_criacao")
+    private String dataCriacao;
     private String status;
     @ManyToOne
     private Usuario autor;
@@ -35,7 +36,7 @@ public class Topico {
     public Topico(DadosTopicoCadastrar cadastro) {
         this.titulo = cadastro.titulo();
         this.mensagem = cadastro.mensagem();
-        this.data_criacao = LocalDateTime.now().toString();
+        this.dataCriacao = LocalDateTime.now().toString();
     }
 
     public void setAutor(Usuario autor) {

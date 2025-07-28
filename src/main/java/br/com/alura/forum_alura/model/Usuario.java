@@ -1,7 +1,10 @@
 package br.com.alura.forum_alura.model;
 
+import br.com.alura.forum_alura.DTO.DadosTopicoAtualizar;
+import br.com.alura.forum_alura.DTO.DadosUsuarioAtualizar;
 import br.com.alura.forum_alura.DTO.DadosUsuarioCadastrar;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -78,5 +81,9 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void atualizarInformacoes(@Valid DadosUsuarioAtualizar dados) {
+            this.nome = dados.nome();
     }
 }

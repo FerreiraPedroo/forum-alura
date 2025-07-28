@@ -9,12 +9,15 @@ import br.com.alura.forum_alura.repository.TopicoRepositorio;
 import br.com.alura.forum_alura.repository.UsuarioRepositorio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,13 +36,13 @@ public class TopicoController {
     public ResponseEntity novoTopico(@RequestBody @Valid DadosTopicoCadastrar dados, UriComponentsBuilder uriBuilder) {
 
         try {
-            Optional<Topico> topicoExistente = repositorio.procurarTopicoPeloTituloOuMensagem(dados.titulo(),dados.mensagem());
+            Optional<Topico> topicoExistente = repositorio.procurarTopicoPeloTituloOuMensagem(dados.titulo(), dados.mensagem());
             Optional<Usuario> autor = usuarioRepositorio.findById(dados.autor());
             Optional<Curso> curso = cursoRepositorio.findById(dados.curso());
 
             if (topicoExistente.isPresent()) {
                 String mensagemRetorno = topicoExistente.get().getTitulo().equals(dados.titulo()) ? "titulo" : "mensagem";
-                return ResponseEntity.unprocessableEntity().body("Existe um tópico com esse "+ mensagemRetorno);
+                return ResponseEntity.unprocessableEntity().body("Existe um tópico com esse " + mensagemRetorno);
 
             } else if (!autor.isPresent()) {
                 return ResponseEntity.unprocessableEntity().body("Usuario não encontrado para criar o tópico");
@@ -99,17 +102,17 @@ public class TopicoController {
     }
 
     @GetMapping
-    public ResponseEntity listarTopicos() {
+    public ResponseEntity<?> listarTopicos(@RequestParam(required = false) String titulo, @PageableDefault(size = 10, sort = {"dataCriacao"}, direction = Sort.Direction.ASC) Pageable paginacao) {
         try {
+            Page<DadosTopico> listaTopicos;
 
-            List<DadosTopico> listaTopicos = repositorio.findAll()
-                    .stream()
-                    .map(DadosTopico::new).toList();
-
-            System.out.println(listaTopicos);
+            if (titulo == null || titulo.isBlank()) {
+                listaTopicos = repositorio.findAll(paginacao).map(DadosTopico::new);
+            } else {
+                listaTopicos = repositorio.findByTituloContainingIgnoreCase(titulo, paginacao).map(DadosTopico::new);
+            }
 
             return ResponseEntity.ok(listaTopicos);
-
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");

@@ -1,17 +1,18 @@
 package br.com.alura.forum_alura.controller;
 
-import br.com.alura.forum_alura.DTO.DadosUsuarioCadastrar;
-import br.com.alura.forum_alura.DTO.DadosUsuario;
+import jakarta.validation.Valid;
 import br.com.alura.forum_alura.model.Perfil;
 import br.com.alura.forum_alura.model.Usuario;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import br.com.alura.forum_alura.DTO.DadosUsuario;
+import org.springframework.web.util.UriComponentsBuilder;
+import br.com.alura.forum_alura.DTO.DadosUsuarioAtualizar;
+import br.com.alura.forum_alura.DTO.DadosUsuarioCadastrar;
 import br.com.alura.forum_alura.repository.PerfilRepositorio;
 import br.com.alura.forum_alura.repository.UsuarioRepositorio;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class UsuarioController {
     @Transactional
     public ResponseEntity usuarioRegistrar(@RequestBody @Valid DadosUsuarioCadastrar dados, UriComponentsBuilder uriBuilder) {
         try {
-            Optional<Usuario> usuarioEncontrado = repositorio.procurarUsuarioPeloNome(dados.nome());
+            Optional<Usuario> usuarioEncontrado = repositorio.procurarUsuarioPeloNomeOuEmail(dados.nome(), dados.email());
             Optional<Perfil> perfilEncontrado = perfilRepositorio.findById(dados.perfil());
 
             if (usuarioEncontrado.isPresent()) {
@@ -53,6 +54,33 @@ public class UsuarioController {
         }
     }
 
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity atualizarUsuarios(@PathVariable Long id, @RequestBody @Valid DadosUsuarioAtualizar dados) {
+
+        try {
+            Optional<Usuario> usuarioEncontrado = repositorio.findByIdOrNome(id, dados.nome());
+
+            if (!usuarioEncontrado.isPresent() || !id.equals(usuarioEncontrado.get().getId())) {
+                return ResponseEntity.badRequest().body("Usuário que deseja atualizar não encontrado.");
+            }
+
+            if (dados.nome().equalsIgnoreCase(usuarioEncontrado.get().getNome())) {
+                return ResponseEntity.badRequest().body("Existe um usuário com o mesmo nome.");
+            }
+
+            Usuario usuario = usuarioEncontrado.get();
+            usuario.atualizarInformacoes(dados);
+
+            repositorio.save(usuario);
+
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi possivel atualizar o tópico.");
+        }
+    }
+
     @GetMapping
     public ResponseEntity usuarioLista() {
         try {
@@ -65,6 +93,25 @@ public class UsuarioController {
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluirUsuario(@PathVariable Long id) {
+        try {
+            Optional<Usuario> usuarioEncontrado = repositorio.findById(id);
+
+            if (!usuarioEncontrado.isPresent()) {
+                return ResponseEntity.badRequest().body("Usuario não encontrado.");
+            }
+
+            repositorio.deleteById(id);
+
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Não foi excluir o usuario.");
         }
     }
 
