@@ -1,6 +1,6 @@
 package br.com.alura.forum_alura.infra.security;
 
-import br.com.alura.forum_alura.DTO.DadosTopicoUsuario;
+
 import br.com.alura.forum_alura.repository.UsuarioRepositorio;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,7 +39,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private String recuperarToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if (authHeader == null) {
+        if (authHeader != null) {
             return authHeader.replace("Bearer ", "");
         }
         return null;

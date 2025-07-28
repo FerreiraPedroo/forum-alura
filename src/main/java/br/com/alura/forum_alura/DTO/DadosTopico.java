@@ -5,6 +5,7 @@ import br.com.alura.forum_alura.model.Topico;
 
 
 public record DadosTopico(
+        Long id,
         String titulo,
         String mensagem,
         String data_criacao,
@@ -14,6 +15,7 @@ public record DadosTopico(
 ) {
     public DadosTopico(Topico topico) {
         this(
+                topico.getId(),
                 topico.getTitulo(),
                 topico.getMensagem(),
                 topico.getData_criacao(),

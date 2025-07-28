@@ -1,14 +1,18 @@
 package br.com.alura.forum_alura.controller;
 
 
+import br.com.alura.forum_alura.DTO.DadosCurso;
 import br.com.alura.forum_alura.DTO.DadosPerfilCadastrar;
 import br.com.alura.forum_alura.DTO.DadosPerfil;
+import br.com.alura.forum_alura.model.Curso;
 import br.com.alura.forum_alura.model.Perfil;
 import br.com.alura.forum_alura.repository.PerfilRepositorio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +25,8 @@ public class PerfilController {
     private PerfilRepositorio repositorio;
 
     @PostMapping
-    public ResponseEntity novoPerfil(@RequestBody @Valid DadosPerfilCadastrar dados) {
+    @Transactional
+    public ResponseEntity novoPerfil(@RequestBody @Valid DadosPerfilCadastrar dados, UriComponentsBuilder uriBuilder) {
 
         try {
             Optional<Perfil> perfilExistente = repositorio.procurarPerfilPeloNome(dados.nome());
@@ -30,9 +35,12 @@ public class PerfilController {
                 return ResponseEntity.unprocessableEntity().body("Existe um perfil com esse nome");
             }
 
-            repositorio.save(new Perfil(dados));
+            Perfil perfil = new Perfil(dados);
+            repositorio.save(perfil);
 
-            return ResponseEntity.ok("Perfil criado com sucesso.");
+            var uri = uriBuilder.path("/perfil/{id}").buildAndExpand(perfil.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DadosPerfil(perfil));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possivel criar o perfil.");

@@ -10,7 +10,7 @@ create table usuarios(
    id int not null AUTO_INCREMENT,
    nome varchar(50) not null,
    email varchar(50) not null,
-   senha varchar(50) not null,
+   senha varchar(100) not null,
    perfil_id int not null,
 
    primary key(id),

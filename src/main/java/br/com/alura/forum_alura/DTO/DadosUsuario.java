@@ -2,13 +2,13 @@ package br.com.alura.forum_alura.DTO;
 
 import br.com.alura.forum_alura.model.Usuario;
 
-public record DadosUsuarioLista(
+public record DadosUsuario(
         Long id,
         String nome,
         String email,
         DadosPerfil perfil
 ) {
-    public DadosUsuarioLista(Usuario usuario) {
+    public DadosUsuario(Usuario usuario) {
         this(
                 usuario.getId(),
                 usuario.getNome(),

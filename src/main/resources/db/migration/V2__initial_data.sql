@@ -1,0 +1,2 @@
+insert into perfil (nome) value('usuario');
+insert into usuarios (nome, email, senha, perfil_id)  value('master', 'master@master.com.br', '$2a$10$u96vOBQ8FgATq6tZVNr1Kek2QbVt.obKEPkdJmDX5e9FJfU2Pd6tK',1);

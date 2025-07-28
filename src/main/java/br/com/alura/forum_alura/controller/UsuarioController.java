@@ -1,7 +1,7 @@
 package br.com.alura.forum_alura.controller;
 
 import br.com.alura.forum_alura.DTO.DadosUsuarioCadastrar;
-import br.com.alura.forum_alura.DTO.DadosUsuarioLista;
+import br.com.alura.forum_alura.DTO.DadosUsuario;
 import br.com.alura.forum_alura.model.Perfil;
 import br.com.alura.forum_alura.model.Usuario;
 import br.com.alura.forum_alura.repository.PerfilRepositorio;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity usuarioRegistrar(@RequestBody @Valid DadosUsuarioCadastrar dados) {
+    public ResponseEntity usuarioRegistrar(@RequestBody @Valid DadosUsuarioCadastrar dados, UriComponentsBuilder uriBuilder) {
         try {
             Optional<Usuario> usuarioEncontrado = repositorio.procurarUsuarioPeloNome(dados.nome());
             Optional<Perfil> perfilEncontrado = perfilRepositorio.findById(dados.perfil());
@@ -37,13 +38,16 @@ public class UsuarioController {
             } else if (!perfilEncontrado.isPresent()) {
                 return ResponseEntity.unprocessableEntity().body("Não existe o perfil para cadastro.");
             }
-            Usuario usuario = new Usuario(dados);
 
+            Usuario usuario = new Usuario(dados);
             usuario.setPerfil(perfilEncontrado.get());
 
             repositorio.save(usuario);
 
-            return ResponseEntity.ok("Usuário registrado com sucesso.");
+            var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DadosUsuario(usuario));
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possivel efetuar o cadastro.");
         }
@@ -53,9 +57,9 @@ public class UsuarioController {
     public ResponseEntity usuarioLista() {
         try {
 
-            List<DadosUsuarioLista> listaUsuarios = repositorio.findAll()
+            List<DadosUsuario> listaUsuarios = repositorio.findAll()
                     .stream()
-                    .map(DadosUsuarioLista::new).toList();
+                    .map(DadosUsuario::new).toList();
 
             return ResponseEntity.ok(listaUsuarios);
 

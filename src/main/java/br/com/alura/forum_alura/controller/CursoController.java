@@ -8,7 +8,10 @@ import br.com.alura.forum_alura.repository.CursoRepositorio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +24,8 @@ public class CursoController {
     private CursoRepositorio repositorio;
 
     @PostMapping
-    public ResponseEntity novoCurso(@RequestBody @Valid DadosCursoCadastrar dados) {
-
+    @Transactional
+    public ResponseEntity novoCurso(@RequestBody @Valid DadosCursoCadastrar dados, UriComponentsBuilder uriBuilder) {
         try {
             Optional<Curso> cursoExistente = repositorio.procurarCursoPeloNome(dados.nome());
 
@@ -30,9 +33,12 @@ public class CursoController {
                 return ResponseEntity.unprocessableEntity().body("Existe um curso com esse nome.");
             }
 
-            repositorio.save(new Curso(dados));
+            Curso curso = new Curso(dados);
+            repositorio.save(curso);
 
-            return ResponseEntity.ok("Curso criado com sucesso.");
+            var uri = uriBuilder.path("/cursos/{id}").buildAndExpand(curso.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DadosCurso(curso));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possivel criar o curso.");

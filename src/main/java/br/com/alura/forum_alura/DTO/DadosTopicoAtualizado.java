@@ -7,7 +7,7 @@ public record DadosTopicoAtualizado(
         String mensagem,
         String data_criacao,
         String status,
-        DadosUsuarioLista autor,
+        DadosUsuario autor,
         DadosCurso curso
 ) {
     public DadosTopicoAtualizado(Topico topico) {
@@ -16,7 +16,7 @@ public record DadosTopicoAtualizado(
                 topico.getMensagem(),
                 topico.getData_criacao(),
                 topico.getStatus(),
-                new DadosUsuarioLista(topico.getAutor()),
+                new DadosUsuario(topico.getAutor()),
                 new DadosCurso(topico.getCurso())
         );
     }

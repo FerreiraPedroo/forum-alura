@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,19 +30,21 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity novoTopico(@RequestBody @Valid DadosTopicoCadastrar dados) {
+    public ResponseEntity novoTopico(@RequestBody @Valid DadosTopicoCadastrar dados, UriComponentsBuilder uriBuilder) {
 
         try {
-            Optional<Topico> topicoExistente = repositorio.procurarTopicoPeloTitulo(dados.titulo());
+            Optional<Topico> topicoExistente = repositorio.procurarTopicoPeloTituloOuMensagem(dados.titulo(),dados.mensagem());
             Optional<Usuario> autor = usuarioRepositorio.findById(dados.autor());
             Optional<Curso> curso = cursoRepositorio.findById(dados.curso());
 
             if (topicoExistente.isPresent()) {
-                return ResponseEntity.unprocessableEntity().body("Existe um tópico com esse titulo");
+                String mensagemRetorno = topicoExistente.get().getTitulo().equals(dados.titulo()) ? "titulo" : "mensagem";
+                return ResponseEntity.unprocessableEntity().body("Existe um tópico com esse "+ mensagemRetorno);
+
             } else if (!autor.isPresent()) {
-                return ResponseEntity.unprocessableEntity().body("Usuario não encontrado para criar o topico");
+                return ResponseEntity.unprocessableEntity().body("Usuario não encontrado para criar o tópico");
             } else if (!curso.isPresent()) {
-                return ResponseEntity.unprocessableEntity().body("Curso não encontrado para criar o topico");
+                return ResponseEntity.unprocessableEntity().body("Curso não encontrado para criar o tópico");
             }
 
             Topico topico = new Topico(dados);
@@ -50,13 +53,17 @@ public class TopicoController {
 
             repositorio.save(topico);
 
-            return ResponseEntity.ok("Topico criado com sucesso.");
+            var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DadosTopico(topico));
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi possivel criar o tpico.");
+            System.out.println(e);
+            return ResponseEntity.badRequest().body("Não foi possivel criar o tópico.");
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     @Transactional
     public ResponseEntity atualizarTopicos(@PathVariable Long id, @RequestBody @Valid DadosTopicoAtualizar dados) {
 
@@ -64,14 +71,14 @@ public class TopicoController {
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
             if (!topicoEncontrado.isPresent()) {
-                return ResponseEntity.badRequest().body("Topico que deseja atualizar não encontrado.");
+                return ResponseEntity.badRequest().body("Tópico que deseja atualizar não encontrado.");
             }
             Topico topico = topicoEncontrado.get();
 
             if (dados.curso() != null) {
                 Optional<Curso> cursoEncontrado = cursoRepositorio.findById(dados.curso());
                 if (!cursoEncontrado.isPresent()) {
-                    return ResponseEntity.badRequest().body("Curso que deseja associar ao topico não encontrado");
+                    return ResponseEntity.badRequest().body("Curso que deseja associar ao tópico não encontrado");
                 }
                 Curso curso = cursoEncontrado.get();
                 topico.setCurso(curso);
@@ -87,7 +94,7 @@ public class TopicoController {
 
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi possivel atualizar o topico.");
+            return ResponseEntity.badRequest().body("Não foi possivel atualizar o tópico.");
         }
     }
 
@@ -105,18 +112,18 @@ public class TopicoController {
 
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Não foi obter a lista de topicos.");
+            return ResponseEntity.badRequest().body("Não foi obter a lista de tópicos.");
         }
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity detalhesDoTopico(@PathVariable Long id) {
         try {
 
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
             if (!topicoEncontrado.isPresent()) {
-                return ResponseEntity.badRequest().body("Topico não encontrado.");
+                return ResponseEntity.badRequest().body("Tópico não encontrado.");
             }
 
             Topico topico = topicoEncontrado.get();
@@ -129,19 +136,20 @@ public class TopicoController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity excluirTopico(@PathVariable Long id) {
         try {
 
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
             if (!topicoEncontrado.isPresent()) {
-                return ResponseEntity.badRequest().body("Topico não encontrado.");
+                return ResponseEntity.badRequest().body("Tópico não encontrado.");
             }
 
             repositorio.deleteById(id);
 
-            return ResponseEntity.ok("Topico exluido com sucesso.");
+            return ResponseEntity.noContent().build();
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi excluir o tópico.");

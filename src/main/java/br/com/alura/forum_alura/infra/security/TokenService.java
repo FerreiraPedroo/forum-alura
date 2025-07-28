@@ -20,7 +20,7 @@ public class TokenService {
 
     public String gerarToken(Usuario usuario) {
         try {
-            var algoritmo = Algorithm.HMAC256(secret);
+            Algorithm algoritmo = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("API ForumAlura")
                     .withSubject(usuario.getEmail())
@@ -34,9 +34,8 @@ public class TokenService {
 
     public String getSubject(String tokenJWT){
         try {
-
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
+            Algorithm algoritmo = Algorithm.HMAC256(secret);
+            return JWT.require(algoritmo)
                     .withIssuer("API ForumAlura")
                     .build()
                     .verify(tokenJWT)
