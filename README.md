@@ -24,6 +24,7 @@ API REST desenvolvida em Java com Spring Boot para gerenciamento de tópicos e r
 - Criação e listagem de tópicos
 - Atualização e exclusão de tópicos
 - Validação de dados
+- Filtro e paginação
 
 ---
 
@@ -49,9 +50,10 @@ cd forum-alura
 2. Configure o banco de dados em `src/main/resources/application.properties`:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/forum_alura <br/>
-spring.datasource.username= seu usuario <br/>
-spring.datasource.password= sua senha <br/>
-spring.jpa.hibernate.ddl-auto=update <br/>
+spring.datasource.username= "seu usuario" <br/>
+spring.datasource.password= "sua senha" <br/>
+api.security.token.secret=${JWT_SECRET:12345678}
+
 
 4. Execute a aplicação:
 ./mvnw spring-boot:run
