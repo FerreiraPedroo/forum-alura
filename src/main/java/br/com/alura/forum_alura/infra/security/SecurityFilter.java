@@ -1,7 +1,7 @@
 package br.com.alura.forum_alura.infra.security;
 
 
-import br.com.alura.forum_alura.repository.UsuarioRepositorio;
+import br.com.alura.forum_alura.usuario.UsuarioRepositorio;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

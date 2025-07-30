@@ -1,6 +1,6 @@
 package br.com.alura.forum_alura.infra.security;
 
-import br.com.alura.forum_alura.model.Usuario;
+import br.com.alura.forum_alura.usuario.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
