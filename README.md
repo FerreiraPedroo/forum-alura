@@ -21,10 +21,12 @@ API REST desenvolvida em Java com Spring Boot para gerenciamento de tópicos e r
 
 - Cadastro de usuários
 - Login com autenticação JWT
-- Criação e listagem de tópicos
-- Atualização e exclusão de tópicos
 - Validação de dados
 - Filtro e paginação
+- Criação e listagem de tópicos
+- Atualização e exclusão de tópicos
+- Criar, atualizar e excluir respostas do tópico
+
 
 ---
 
@@ -32,13 +34,14 @@ API REST desenvolvida em Java com Spring Boot para gerenciamento de tópicos e r
 
 ```bash
 forum-alura/
-├── controller/          # Camada de exposição da API (REST Controllers)
-├── dto/                 # Objetos de transferência de dados (entrada e saída)
-├── model/               # Entidades JPA mapeadas para o banco
-├── repository/          # Interfaces de acesso ao banco de dados
-├── service/             # Serviços da aplicação
-├── config/              # Configurações (segurança, CORS, etc.)
-└── main/                # Classe principal da aplicação Spring Boot
+├── autenticacao/
+├── curso/
+├── infra/
+│   └── security/
+├── perfil/
+├── resposta/
+├── topico/
+└── usuario/
 ```
 
 ## ⚙️ Configuração
@@ -48,12 +51,12 @@ git clone https://github.com/FerreiraPedroo/forum-alura.git
 cd forum-alura
 
 2. Configure o banco de dados em `src/main/resources/application.properties`:
-
-spring.datasource.url=jdbc:mysql://localhost:3306/forum_alura <br/>
-spring.datasource.username= "seu usuario" <br/>
-spring.datasource.password= "sua senha" <br/>
+```bash
+spring.datasource.url=jdbc:mysql://localhost:3306/forum_alura
+spring.datasource.username= "seu usuario"
+spring.datasource.password= "sua senha"
 api.security.token.secret=${JWT_SECRET:12345678}
-
+```
 
 4. Execute a aplicação:
 ./mvnw spring-boot:run
