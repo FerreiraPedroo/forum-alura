@@ -1,22 +1,22 @@
 package br.com.alura.forum_alura.topico;
 
-import br.com.alura.forum_alura.curso.Curso;
-import br.com.alura.forum_alura.resposta.Resposta;
-import br.com.alura.forum_alura.resposta.RespostaRepositorio;
-import br.com.alura.forum_alura.topico.DTO.*;
-import br.com.alura.forum_alura.usuario.Usuario;
-import br.com.alura.forum_alura.curso.CursoRepositorio;
-import br.com.alura.forum_alura.usuario.UsuarioRepositorio;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import br.com.alura.forum_alura.curso.Curso;
+import br.com.alura.forum_alura.topico.DTO.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Pageable;
+import br.com.alura.forum_alura.usuario.Usuario;
 import org.springframework.web.bind.annotation.*;
+import br.com.alura.forum_alura.resposta.Resposta;
+import org.springframework.data.web.PageableDefault;
+import br.com.alura.forum_alura.curso.CursoRepositorio;
 import org.springframework.web.util.UriComponentsBuilder;
+import br.com.alura.forum_alura.usuario.UsuarioRepositorio;
+import br.com.alura.forum_alura.resposta.RespostaRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,6 @@ public class TopicoController {
     @PostMapping
     @Transactional
     public ResponseEntity novoTopico(@RequestBody @Valid DadosTopicoCadastrar dados, UriComponentsBuilder uriBuilder) {
-
         try {
             Optional<Topico> topicoExistente = repositorio.procurarTopicoPeloTituloOuMensagem(dados.titulo(), dados.mensagem());
             Optional<Usuario> autor = usuarioRepositorio.findById(dados.autor());
@@ -60,7 +59,6 @@ public class TopicoController {
             repositorio.save(topico);
 
             var uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-
             return ResponseEntity.created(uri).body(new DadosTopico(topico));
 
         } catch (Exception e) {
@@ -71,8 +69,7 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizarTopicos(@PathVariable Long id, @RequestBody @Valid DadosTopicoAtualizar dados) {
-
+    public ResponseEntity atualizarTopicos(@PathVariable Long id, @RequestBody @Valid DadosTopicoAtualizar dados, UriComponentsBuilder uriBuilder) {
         try {
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
@@ -91,13 +88,9 @@ public class TopicoController {
             }
 
             topico.atualizarInformacoes(dados);
-
             repositorio.save(topico);
 
-            DadosTopicoAtualizado topicoAtualizado = new DadosTopicoAtualizado(topico);
-
-            return ResponseEntity.ok(topicoAtualizado);
-
+            return ResponseEntity.ok(new DadosTopicoAtualizado(topico));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possivel atualizar o tópico.");
@@ -125,22 +118,18 @@ public class TopicoController {
     @GetMapping("/{id}")
     public ResponseEntity detalhesDoTopico(@PathVariable Long id) {
         try {
-
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
             if (!topicoEncontrado.isPresent()) {
                 return ResponseEntity.badRequest().body("Tópico não encontrado.");
             }
+
             Topico topico = topicoEncontrado.get();
 
             List<Resposta> respostasLista = respostaRepositorio.encontrarRespostPorTopicoId(topicoEncontrado.get());
-
             topico.setResposta(respostasLista);
 
-            DadosTopicoDetalhes topicoDados = new DadosTopicoDetalhes(topico);
-
-
-            return ResponseEntity.ok(topicoDados);
+            return ResponseEntity.ok(new DadosTopicoDetalhes(topico));
 
         } catch (Exception e) {
             System.out.println(e);
@@ -152,7 +141,6 @@ public class TopicoController {
     @Transactional
     public ResponseEntity excluirTopico(@PathVariable Long id) {
         try {
-
             Optional<Topico> topicoEncontrado = repositorio.findById(id);
 
             if (!topicoEncontrado.isPresent()) {
@@ -160,7 +148,6 @@ public class TopicoController {
             }
 
             repositorio.deleteById(id);
-
             return ResponseEntity.noContent().build();
 
         } catch (Exception e) {

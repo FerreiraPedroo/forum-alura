@@ -1,17 +1,17 @@
 package br.com.alura.forum_alura.usuario;
 
-import br.com.alura.forum_alura.usuario.DTO.DadosUsuarioAtualizar;
-import br.com.alura.forum_alura.usuario.DTO.DadosUsuarioCadastrar;
-import br.com.alura.forum_alura.perfil.Perfil;
-import br.com.alura.forum_alura.resposta.Resposta;
+import lombok.Getter;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import br.com.alura.forum_alura.perfil.Perfil;
+import br.com.alura.forum_alura.resposta.Resposta;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import br.com.alura.forum_alura.usuario.DTO.DadosUsuarioAtualizar;
+import br.com.alura.forum_alura.usuario.DTO.DadosUsuarioCadastrar;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,13 +37,13 @@ public class Usuario implements UserDetails {
     private List<Resposta> respostas;
 
 
-    public Usuario(DadosUsuarioCadastrar dados){
+    public Usuario(DadosUsuarioCadastrar dados) {
         this.nome = dados.nome();
         this.email = dados.email();
         this.senha = dados.senha();
     }
 
-    public void setPerfil(Perfil perfil){
+    public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
 
@@ -84,6 +84,6 @@ public class Usuario implements UserDetails {
     }
 
     public void atualizarInformacoes(@Valid DadosUsuarioAtualizar dados) {
-            this.nome = dados.nome();
+        this.nome = dados.nome();
     }
 }

@@ -34,7 +34,6 @@ public class CursoController {
             repositorio.save(curso);
 
             var uri = uriBuilder.path("/cursos/{id}").buildAndExpand(curso.getId()).toUri();
-
             return ResponseEntity.created(uri).body(new DadosCurso(curso));
 
         } catch (Exception e) {

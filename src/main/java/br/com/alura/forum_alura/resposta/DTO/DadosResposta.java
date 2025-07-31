@@ -3,7 +3,6 @@ package br.com.alura.forum_alura.resposta.DTO;
 import br.com.alura.forum_alura.resposta.Resposta;
 import br.com.alura.forum_alura.topico.DTO.DadosTopico;
 import br.com.alura.forum_alura.topico.DTO.DadosTopicoUsuario;
-import br.com.alura.forum_alura.usuario.DTO.DadosUsuario;
 
 public record DadosResposta(
         Long id,

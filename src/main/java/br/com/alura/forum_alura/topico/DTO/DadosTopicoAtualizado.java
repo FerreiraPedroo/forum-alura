@@ -1,8 +1,8 @@
 package br.com.alura.forum_alura.topico.DTO;
 
+import br.com.alura.forum_alura.topico.Topico;
 import br.com.alura.forum_alura.curso.DTO.DadosCurso;
 import br.com.alura.forum_alura.usuario.DTO.DadosUsuario;
-import br.com.alura.forum_alura.topico.Topico;
 
 public record DadosTopicoAtualizado(
         String titulo,

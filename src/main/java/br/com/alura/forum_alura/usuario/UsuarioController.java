@@ -24,7 +24,6 @@ public class UsuarioController {
     @Autowired
     private PerfilRepositorio perfilRepositorio;
 
-
     @PostMapping
     @Transactional
     public ResponseEntity usuarioRegistrar(@RequestBody @Valid DadosUsuarioCadastrar dados, UriComponentsBuilder uriBuilder) {
@@ -44,7 +43,6 @@ public class UsuarioController {
             repositorio.save(usuario);
 
             var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
-
             return ResponseEntity.created(uri).body(new DadosUsuario(usuario));
 
         } catch (Exception e) {
@@ -55,7 +53,6 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity atualizarUsuarios(@PathVariable Long id, @RequestBody @Valid DadosUsuarioAtualizar dados) {
-
         try {
             Optional<Usuario> usuarioEncontrado = repositorio.findByIdOrNome(id, dados.nome());
 
@@ -72,7 +69,7 @@ public class UsuarioController {
 
             repositorio.save(usuario);
 
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().body(new DadosUsuario(usuario));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Não foi possivel atualizar o tópico.");
@@ -82,7 +79,6 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity usuarioLista() {
         try {
-
             List<DadosUsuario> listaUsuarios = repositorio.findAll()
                     .stream()
                     .map(DadosUsuario::new).toList();

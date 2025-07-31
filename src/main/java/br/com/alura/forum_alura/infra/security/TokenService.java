@@ -1,12 +1,12 @@
 package br.com.alura.forum_alura.infra.security;
 
-import br.com.alura.forum_alura.usuario.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.stereotype.Service;
+import br.com.alura.forum_alura.usuario.Usuario;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ public class TokenService {
         }
     }
 
-    public String getSubject(String tokenJWT){
+    public String getSubject(String tokenJWT) {
         try {
             Algorithm algoritmo = Algorithm.HMAC256(secret);
             return JWT.require(algoritmo)
@@ -41,8 +41,8 @@ public class TokenService {
                     .verify(tokenJWT)
                     .getSubject();
 
-        }catch (JWTVerificationException exception){
-            throw  new RuntimeException("Token JWT inválido ou expirado.");
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Token JWT inválido ou expirado.");
         }
     }
 

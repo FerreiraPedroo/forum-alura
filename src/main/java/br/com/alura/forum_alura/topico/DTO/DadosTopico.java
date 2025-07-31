@@ -1,8 +1,6 @@
 package br.com.alura.forum_alura.topico.DTO;
 
-
 import br.com.alura.forum_alura.topico.Topico;
-
 
 public record DadosTopico(
         Long id,

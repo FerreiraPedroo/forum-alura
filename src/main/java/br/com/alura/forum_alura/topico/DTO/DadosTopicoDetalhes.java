@@ -1,10 +1,8 @@
 package br.com.alura.forum_alura.topico.DTO;
 
-
-import br.com.alura.forum_alura.topico.Topico;
-
 import java.util.List;
 
+import br.com.alura.forum_alura.topico.Topico;
 
 public record DadosTopicoDetalhes(
         Long id,

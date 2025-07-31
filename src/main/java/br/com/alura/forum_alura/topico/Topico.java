@@ -1,12 +1,12 @@
 package br.com.alura.forum_alura.topico;
 
+import lombok.*;
+import jakarta.persistence.*;
 import br.com.alura.forum_alura.curso.Curso;
-import br.com.alura.forum_alura.resposta.Resposta;
 import br.com.alura.forum_alura.usuario.Usuario;
+import br.com.alura.forum_alura.resposta.Resposta;
 import br.com.alura.forum_alura.topico.DTO.DadosTopicoAtualizar;
 import br.com.alura.forum_alura.topico.DTO.DadosTopicoCadastrar;
-import jakarta.persistence.*;
-import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,6 +56,5 @@ public class Topico {
         if (dados.mensagem() != null) this.mensagem = dados.mensagem();
         if (dados.status() != null) this.status = dados.status();
     }
-
 
 }

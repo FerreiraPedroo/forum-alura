@@ -1,14 +1,11 @@
 package br.com.alura.forum_alura.curso;
 
 import br.com.alura.forum_alura.curso.DTO.DadosCursoCadastrar;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-//@JsonIgnoreProperties(ignoreUnknown = true)
-//@jsonAlias = para mudar o nome do campo na declaração \/
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Table(name = "cursos")
 @Entity(name = "Curso")

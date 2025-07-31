@@ -1,15 +1,17 @@
 package br.com.alura.forum_alura.resposta;
 
-import br.com.alura.forum_alura.resposta.DTO.DadosRespostaCadastrar;
-import br.com.alura.forum_alura.topico.Topico;
-import br.com.alura.forum_alura.usuario.Usuario;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import br.com.alura.forum_alura.usuario.Usuario;
+import br.com.alura.forum_alura.topico.Topico;
+import br.com.alura.forum_alura.resposta.DTO.DadosRespostaCadastrar;
+
 
 @Table(name = "respostas")
 @Entity(name = "Resposta")
@@ -40,12 +42,15 @@ public class Resposta {
         this.solucao = 0;
     }
 
-
     public void setAutor(Usuario usuario) {
         this.autor = usuario;
     }
 
     public void setTopico(Topico topico) {
         this.topico = topico;
+    }
+
+    public void setMessagem(String mensagem) {
+        this.mensagem = mensagem;
     }
 }

@@ -1,14 +1,14 @@
 package br.com.alura.forum_alura.perfil;
 
 
-import br.com.alura.forum_alura.perfil.DTO.DadosPerfilCadastrar;
-import br.com.alura.forum_alura.perfil.DTO.DadosPerfil;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import br.com.alura.forum_alura.perfil.DTO.DadosPerfil;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import br.com.alura.forum_alura.perfil.DTO.DadosPerfilCadastrar;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,6 @@ public class PerfilController {
             repositorio.save(perfil);
 
             var uri = uriBuilder.path("/perfil/{id}").buildAndExpand(perfil.getId()).toUri();
-
             return ResponseEntity.created(uri).body(new DadosPerfil(perfil));
 
         } catch (Exception e) {

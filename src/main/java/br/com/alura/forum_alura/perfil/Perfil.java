@@ -1,12 +1,12 @@
 package br.com.alura.forum_alura.perfil;
 
-import br.com.alura.forum_alura.perfil.DTO.DadosPerfilCadastrar;
-import br.com.alura.forum_alura.usuario.Usuario;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import br.com.alura.forum_alura.usuario.Usuario;
+import br.com.alura.forum_alura.perfil.DTO.DadosPerfilCadastrar;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class Perfil {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     String nome;
 
     @OneToMany(mappedBy = "perfil")
