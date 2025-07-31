@@ -101,11 +101,6 @@ GitHub: [@FerreiraPedroo](https://github.com/FerreiraPedroo)
 
 ---
 
-## 📃 Licença
-
-Distribuído sob a licença MIT.  
-Veja mais em [`LICENSE`](LICENSE).
-
 
 
 
